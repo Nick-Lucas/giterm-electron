@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import RightClickArea from 'react-electron-contextmenu'
 import { clipboard } from 'electron'
 
-import { Section } from './Section'
-import { Row, Label } from './Row'
+import { Section, Label, Row } from './primitives'
 
 export function Tags() {
   const _tags = useSelector((state) => state.tags.list) || []
@@ -33,11 +31,9 @@ export function Tags() {
     <Section title="TAGS" initialOpenState={false}>
       {tags.map((tag) => {
         return (
-          <RightClickArea key={tag.id} menuItems={tag.menuItems}>
-            <Row>
-              <Label>{tag.name}</Label>
-            </Row>
-          </RightClickArea>
+          <Row key={tag.id} menuItems={tag.menuItems}>
+            <Label>{tag.name}</Label>
+          </Row>
         )
       })}
     </Section>

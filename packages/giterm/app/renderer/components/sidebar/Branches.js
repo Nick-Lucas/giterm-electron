@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import RightClickArea from 'react-electron-contextmenu'
 import { clipboard } from 'electron'
 
-import { Section } from './Section'
-import { Row, Label } from './Row'
+import { Section, Label, Row, TreeItem } from './primitives'
 import { BranchUpstreamState } from './BranchUpstreamState'
+import { pathsToTree } from 'app/lib/pathsToTree'
 
 /*  A branch
     {
@@ -20,7 +19,7 @@ import { BranchUpstreamState } from './BranchUpstreamState'
 
 export function Branches() {
   const _branches = useSelector((state) => state.branches.list) || []
-  const branches = useMemo(() => {
+  const nodes = useMemo(() => {
     const foundRemotes = {}
     const branches = []
 
@@ -49,28 +48,39 @@ export function Branches() {
       }
     }
 
-    return branches
+    return pathsToTree(branches, (branch) => branch.name, { maxDepth: 2 })
+      .children
   }, [_branches])
 
   return (
-    <Section title="BRANCHES">
-      {branches.map((branch) => {
-        return (
-          <RightClickArea key={branch.id} menuItems={branch.menuItems}>
-            <Row active={branch.isHead}>
-              <Label>{branch.name}</Label>
-
-              {branch.upstream && (
-                <BranchUpstreamState
-                  ahead={branch.upstream.ahead}
-                  behind={branch.upstream.behind}
-                  selected={branch.isHead}
-                />
-              )}
-            </Row>
-          </RightClickArea>
-        )
-      })}
-    </Section>
+    <Section title="BRANCHES">{nodes.map((node) => TreeNode(node))}</Section>
   )
+}
+
+function TreeNode(node) {
+  if (node.leaf) {
+    const branch = node.object
+
+    return (
+      <Row key={branch.id} menuItems={branch.menuItems} active={branch.isHead}>
+        <Label>{node.name}</Label>
+
+        {branch.upstream && (
+          <BranchUpstreamState
+            ahead={branch.upstream.ahead}
+            behind={branch.upstream.behind}
+            selected={branch.isHead}
+          />
+        )}
+      </Row>
+    )
+  } else {
+    return (
+      <Row key={node.name} depth={node.depth} selectable={false}>
+        <TreeItem initialOpenState={true} title={node.name}>
+          {node.children.map(TreeNode)}
+        </TreeItem>
+      </Row>
+    )
+  }
 }

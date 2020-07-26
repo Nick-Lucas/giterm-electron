@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import RightClickArea from 'react-electron-contextmenu'
 import { clipboard } from 'electron'
 
-import { Section } from './Section'
-import { Row, Label } from './Row'
+import { Section, Label, Row } from './primitives'
 
 export function Remotes() {
   const _remotes = useSelector((state) => state.remotes) || []
@@ -32,11 +30,9 @@ export function Remotes() {
     <Section title="REMOTES">
       {remotes.map((remote) => {
         return (
-          <RightClickArea key={remote.id} menuItems={remote.menuItems}>
-            <Row>
-              <Label>{remote.name}</Label>
-            </Row>
-          </RightClickArea>
+          <Row key={remote.id} menuItems={remote.menuItems}>
+            <Label>{remote.name}</Label>
+          </Row>
         )
       })}
     </Section>

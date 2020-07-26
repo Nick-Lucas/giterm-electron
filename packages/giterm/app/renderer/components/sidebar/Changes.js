@@ -2,11 +2,9 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import RightClickArea from 'react-electron-contextmenu'
 import { clipboard } from 'electron'
 
-import { Section } from './Section'
-import { Row, Label } from './Row'
+import { Section, Label, Row } from './primitives'
 import { colours } from 'app/lib/theme'
 
 export function Changes() {
@@ -52,13 +50,11 @@ export function Changes() {
       hasContent={_files.length > 0}>
       {staged.map((file) => {
         return (
-          <RightClickArea key={file.path} menuItems={file.menuItems}>
-            <Row>
-              <Label colour={file.colour} trimStart>
-                {file.path}
-              </Label>
-            </Row>
-          </RightClickArea>
+          <Row key={file.path} menuItems={file.menuItems}>
+            <Label colour={file.colour} trimStart>
+              {file.path}
+            </Label>
+          </Row>
         )
       })}
 
@@ -66,13 +62,11 @@ export function Changes() {
 
       {unstaged.map((file) => {
         return (
-          <RightClickArea key={file.path} menuItems={file.menuItems}>
-            <Row>
-              <Label colour={file.colour} trimStart>
-                {file.path}
-              </Label>
-            </Row>
-          </RightClickArea>
+          <Row key={file.path} menuItems={file.menuItems}>
+            <Label colour={file.colour} trimStart>
+              {file.path}
+            </Label>
+          </Row>
         )
       })}
     </Section>
