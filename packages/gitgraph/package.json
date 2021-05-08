@@ -12,7 +12,7 @@
     "dev": "yarn run build -w"
   },
   "dependencies": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "microbundle": "^0.12.3"

@@ -16,7 +16,7 @@
     "moment": "^2.24.0",
     "nodegit": "^0.26.5",
     "simple-git": "^1.129.0",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "microbundle": "^0.12.3"
