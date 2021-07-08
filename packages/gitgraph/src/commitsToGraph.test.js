@@ -16,6 +16,9 @@ describe('commitsToGraph', () => {
     }
   }
 
+  /**
+   * @param  {...[columnStart: number, columnEnd: number, colour: number, type: string]} pairs 
+   */
   function makeLinks(...pairs) {
     return pairs.map(([from, to, colour, connections = 'both']) => {
       return _link(from, to, colour, null, null, {
@@ -478,6 +481,51 @@ describe('commitsToGraph', () => {
         [],
         makeLinks([0, 0, 0, 'start'], [0, 1, 1, 'start']),
         makeLinks([0, 0, 0, 'none'], [1, 1, 1, 'end'], [2, 1, 1], [2, 2, 2, 'start']),
+      ])
+    })
+
+    it(`should draw a graph where a commit pulls from a branch left of it, but there is another commit blocking the merge line
+        --------------------------------------------
+          .
+          |.
+          ||.
+          .||
+           |.
+           .|
+           .⩘
+        --------------------------------------------
+    `, () => {
+      scenarioPath = 'data-driven.f'
+      const commits = scenarios[scenarioPath]
+
+      const { nodes, links } = commitsToGraph(commits)
+      
+      expectNodePositions(nodes, [
+        ['.'], 
+        [' ', '.'],
+        [' ', ' ', '.'], 
+        ['.', ' ', ' '], 
+        [' ', ' ', '.'], 
+        [' ', '.', ' '], 
+        [' ', '.', ' '], 
+      ])
+      expectNodeColours(nodes, [
+        makeColours(0),
+        makeColours(1),
+        makeColours(2),
+        makeColours(0),
+        makeColours(2, 1),
+        makeColours(1),
+        makeColours(1),
+      ])
+      expectLinks(links, [
+        [],
+        makeLinks([0, 0, 0, 'start']),
+        makeLinks([0, 0, 0, 'none'], [1, 1, 1, 'start']),
+        makeLinks([0, 0, 0, 'end'], [1, 1, 1, 'none'], [2, 2, 2, 'start']),
+        makeLinks(                  [1, 1, 1, 'none'], [2, 2, 2, 'end']),
+        makeLinks(                  [1, 1, 1, 'end'],  /*[2, 2, 3, 'start'],*/ [2, 2, 2, 'start']),
+        makeLinks(                  [1, 1, 1, 'both'], [2, 1, 3, 'end'], [2, 2, 2, 'none']),
       ])
     })
   })

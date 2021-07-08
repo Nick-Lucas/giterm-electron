@@ -41,7 +41,7 @@ export default function App() {
     return commits
   }, [path])
 
-  const { nodes, links } = useMemo(() => {
+  const { nodes, links, ...rest } = useMemo(() => {
     return !rehydrateFrom
       ? commitsToGraph(commits)
       : (function() {
@@ -55,6 +55,8 @@ export default function App() {
           )
         })()
   }, [commits, rehydrateFrom])
+
+  console.log({ nodes, links, ...rest })
 
   return (
     <div className="App">
